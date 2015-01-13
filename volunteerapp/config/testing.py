@@ -37,10 +37,10 @@ class Testing(Common):
     #     environ_name="DATABASE_PWD"
     # )
 
-    DATABASES = values.DatabaseURLValue('postgres://postgres:' +
+    DATABASES = values.DatabaseURLValue('postgres://postgres' +
                                         # str(DATABASE_PWD) +
                                         # '@127.0.0.1:5432/' +
-                                        '127.0.0.1:5432/' +
+                                        '@127.0.0.1:5432/' +
                                         'volunteerapp')
     # END DATABASE CONFIGURATION
 
