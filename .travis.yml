@@ -5,8 +5,13 @@ python:
     - "3.4"
 
 env:
-  - DJANGO=1.7.2
-  - DJANGO=1.7.1
+    - DJANGO=1.7.2
+    - DJANGO=1.7.1
+    - DJANGO_CONFIGURATION="Testing"
+    - DATABASE_PWD=""
+
+addons:
+    postgresql: "9.3"
 
 install:
     - pip install -q Django==$DJANGO --use-mirrors
@@ -24,6 +29,8 @@ before_script:
     # psql -U postgrestest -d test -c 'CREATE EXTENSION postgis_topology;'
 
     # pip install coveralls prospector django_nose
+    # create the db
+    - psql -c 'create database volunteerapp;' -U postgres
     # migrate your DB for django projects
     - python volunteerapp/manage.py migrate --noinput
 
