@@ -1,12 +1,12 @@
 language: python
 
 python:
-    # - "2.7"
+    - "2.7"
     - "3.4"
 
 env:
     - DJANGO=1.7.2 DJANGO_CONFIGURATION="Testing"
-    # - DJANGO=1.7.1 DJANGO_CONFIGURATION="Testing" DATABASE_PWD=""
+    - DJANGO=1.7.1 DJANGO_CONFIGURATION="Testing"
 
 addons:
     postgresql: "9.3"
@@ -17,7 +17,7 @@ install:
 
 before_script:
     # check pep8
-    # - "pep8 --exclude=migrations --ignore=E501,E225 docs/"
+    - "pep8 --ignore=E501,E225"
 
     # create the db
     - psql -c 'create database volunteerapp;' -U postgres
@@ -25,7 +25,7 @@ before_script:
     - python volunteerapp/manage.py migrate --noinput
 
 script:
-    - py.test --flake --cov-report term --cov volunteerapp/users/test.py
+    - py.test --flake --cov-report term --cov volunteerapp
 
 after_success:
   - coveralls

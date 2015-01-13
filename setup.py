@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os # NOQA
-import sys # NOQA
+import os  # NOQA
+import sys  # NOQA
 
 
 try:
