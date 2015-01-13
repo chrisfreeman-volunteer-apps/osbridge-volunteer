@@ -21,6 +21,20 @@ class Local(Common):
     INSTALLED_APPS = Common.INSTALLED_APPS
     # END INSTALLED_APPS
 
+    # DATABASE CONFIGURATION
+    # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
+    # DATABASES = values.DatabaseURLValue('postgres://localhost/volunteerapp')
+    DATABASE_PWD = values.SecretValue(
+        environ_prefix="",
+        environ_name="VOLAPP_DATABASE_PWD"
+    )
+
+    DATABASES = values.DatabaseURLValue('postgres://postgres:' +
+                                        str(DATABASE_PWD) +
+                                        '@127.0.0.1:5432/' +
+                                        'volunteerapp')
+    # END DATABASE CONFIGURATION
+
     # Mail settings
     EMAIL_HOST = 'localhost'
     EMAIL_PORT = 1025
