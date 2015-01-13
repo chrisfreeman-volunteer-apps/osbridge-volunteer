@@ -14,7 +14,7 @@ install:
 
 before_script:
     # check pep8Benzion Z Lebowitz
-    - "pep8 --exclude=migrations --ignore=E501,E225 src"
+    - "pep8 --exclude=migrations --ignore=E501,E225 docs/"
     # - pyflakes volunteerapp/users/
 
     # set up the postgres user and database
