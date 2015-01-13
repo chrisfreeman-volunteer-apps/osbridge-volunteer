@@ -31,4 +31,17 @@ class Testing(Common):
     INTERNAL_IPS = ('127.0.0.1', '10.0.2.2',)
     ALLOWED_HOSTS = ["*"]
 
+    # DATABASES = values.DatabaseURLValue('postgres://localhost/volunteerapp')
+    # DATABASE_PWD = values.SecretValue(
+    #     environ_prefix="",
+    #     environ_name="DATABASE_PWD"
+    # )
+
+    DATABASES = values.DatabaseURLValue('postgres://postgres:' +
+                                        # str(DATABASE_PWD) +
+                                        # '@127.0.0.1:5432/' +
+                                        '127.0.0.1:5432/' +
+                                        'volunteerapp')
+    # END DATABASE CONFIGURATION
+
     # Your local stuff: Below this line define 3rd party library settings

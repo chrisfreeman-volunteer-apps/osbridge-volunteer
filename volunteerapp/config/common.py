@@ -114,8 +114,9 @@ class Common(Configuration):
     # DATABASES = values.DatabaseURLValue('postgres://localhost/volunteerapp')
     DATABASE_PWD = values.SecretValue(
         environ_prefix="",
-        environ_name="VOLAPP_DATABASE_PWD"
+        environ_name="DATABASE_PWD"
     )
+
     DATABASES = values.DatabaseURLValue('postgres://postgres:' +
                                         str(DATABASE_PWD) +
                                         '@127.0.0.1:5432/' +
