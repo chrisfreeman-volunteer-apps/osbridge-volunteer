@@ -111,7 +111,15 @@ class Common(Configuration):
 
     # DATABASE CONFIGURATION
     # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
-    DATABASES = values.DatabaseURLValue('postgres://localhost/volunteerapp')
+    # DATABASES = values.DatabaseURLValue('postgres://localhost/volunteerapp')
+    DATABASE_PWD = values.SecretValue(
+        environ_prefix="",
+        environ_name="VOLAPP_DATABASE_PWD"
+    )
+    DATABASES = values.DatabaseURLValue('postgres://postgres:' +
+                                        str(DATABASE_PWD) +
+                                        '@127.0.0.1:5432/' +
+                                        'volunteerapp')
     # END DATABASE CONFIGURATION
 
     # CACHING

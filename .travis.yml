@@ -1,0 +1,35 @@
+language: python
+
+python:
+    - "2.7"
+    - "3.4"
+
+env:
+  - DJANGO=1.7.2
+  - DJANGO=1.7.1
+
+install:
+    - pip install -q Django==$DJANGO --use-mirrors
+    - pip install -r requirements/test.txt
+
+before_script:
+    # check pep8Benzion Z Lebowitz
+    - "pep8 --exclude=migrations --ignore=E501,E225 src"
+    # - pyflakes volunteerapp/users/
+
+    # set up the postgres user and database
+    # createuser -s -r postgrestest
+    # create extensions for POSTGIS
+    # psql -U postgrestest -d test -c 'CREATE EXTENSION postgis;'
+    # psql -U postgrestest -d test -c 'CREATE EXTENSION postgis_topology;'
+
+    # pip install coveralls prospector django_nose
+    # migrate your DB for django projects
+    - python volunteerapp/manage.py migrate --noinput
+
+script:
+    # - py.test --cov-report term --cov volunteerapp/users/test.py
+    - py.test --flake --cov-report term --cov volunteerapp/users/test.py
+
+after_success:
+  - coveralls
