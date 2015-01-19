@@ -15,12 +15,11 @@ from braces.views import LoginRequiredMixin
 from .forms import UserForm
 
 # Import the customized User model
-from .models import User
+from .models import Users
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
-    model = User
-    # These next two lines tell the view to index lookups by username
+    model = Users
     slug_field = "username"
     slug_url_kwarg = "username"
 
@@ -36,22 +35,19 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     form_class = UserForm
+    model = Users
 
-    # we already imported User in the view code above, remember?
-    model = User
-
-    # send the user back to their own page after a successful update
     def get_success_url(self):
         return reverse("users:detail",
                        kwargs={"username": self.request.user.username})
 
     def get_object(self):
         # Only get the User record for the user making the request
-        return User.objects.get(username=self.request.user.username)
+        return Users.objects.get(username=self.request.user.username)
 
 
 class UserListView(LoginRequiredMixin, ListView):
-    model = User
+    model = Users
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"

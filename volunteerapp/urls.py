@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # User management
-    url(r'^users/', include("users.urls", namespace="users")),
+    url(r'^profile/', include("users.urls", namespace="profile")),
     url(r'^accounts/', include('allauth.urls')),
 
     # Uncomment the next line to enable avatars
