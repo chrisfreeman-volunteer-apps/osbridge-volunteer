@@ -15,18 +15,17 @@ from model_utils.models import TimeStampedModel
 from users.models import Users
 
 
-STATUS_CHOICES = (
-    ('--', _('Choose the Status')),
-    ('AA', _('Active')),
-    ('DR', _('Draft Mode')),
-    ('CL', _('Closed')),
-)
-
-
 class CommonModel(TimeStampedModel):
 
+    STATUS_CHOICES = (
+        ('--', _('Choose the Status')),
+        ('AA', _('Active')),
+        ('DR', _('Draft Mode')),
+        ('CL', _('Closed')),
+    )
+
     name = models.CharField(
-        max_length=100, null=True, blank=True,
+        max_length=100, null=True,
         help_text=_("Please add a descriptive name."))
     slug = models.SlugField(
         max_length=50, blank=True,
@@ -35,12 +34,14 @@ class CommonModel(TimeStampedModel):
         max_length=100, null=True, blank=True,
         help_text=_("Describe the shift."))
     status = models.CharField(
-        max_length=2, default='DR',
-        null=True, blank=True,
-        help_text=_("Status of the item (e.g. draft, active or closed. Draft is default."))
+        max_length=2, default='DR', choices=STATUS_CHOICES,
+        help_text=_("Status of the item (e.g. draft, active or closed). Draft is default."))
 
     class Meta:
         abstract = True
+
+    def __unicode__(self):
+        return self.name
 
     def clean_name(self):
         name = self.cleaned_data["name"]
@@ -60,26 +61,22 @@ class Shift(CommonModel):
 
     max_volunteers = models.PositiveIntegerField(
         blank=True, null=True,
-        help_text="Number of volunteers are needed for this shift")
+        help_text=_("Number of volunteers are needed for this shift"))
     volunteers = models.ManyToManyField(
         Users, null=True, blank=True,
-        help_text=_(""))
-    # start_datetime = models.DateTimeField(
-    #     help_text=_("Shift start date and time"))
-    # end_datetime = models.DateTimeField(
-    #     help_text=_("Shift end date and time"))
+        help_text=_("Lists all registered volunteers for this shift."))
+    start_datetime = models.DateTimeField(
+        null=True, blank=True,
+        help_text=_("Shift start date and time"))
+    end_datetime = models.DateTimeField(
+        null=True, blank=True,
+        help_text=_("Shift end date and time"))
 
-    # class Meta:
-        # ordering = ['start_datetime']
+    class Meta:
+        ordering = ['start_datetime']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
-
-    def hours(self):
-        hours = Decimal('0.00')
-        #hours += session.hours
-        hours = self.length
-        return hours
 
     def is_full(self):
         if self.max_volunteers is None:
@@ -89,7 +86,7 @@ class Shift(CommonModel):
         else:
             return True
 
-    def remaining_space(self):
+    def get_remaining_space(self):
         if self.max_volunteers is None:
             return unicode('unlimited')
         space = self.max_volunteers - self.volunteers.count()
@@ -97,7 +94,7 @@ class Shift(CommonModel):
             space = 0
         return space
 
-    def percent_full(self):
+    def get_percent_full(self):
         if self.max_volunteers is None:
             percent = Decimal('0.00')
         else:
@@ -111,21 +108,22 @@ class Shift(CommonModel):
             percent = 100
         return percent.quantize(Decimal('1'))
 
-    def num_volunteers(self):
+    def get_num_volunteers(self):
         return self.volunteers.count()
 
-    def num_hours(self):
+    def get_num_hours(self):
         return self.volunteers.count() * self.get_duration()()
 
-    def max_hours(self):
+    def get_max_hours(self):
         if self.max_volunteers is None:
             return Decimal('0.00')
         return self.max_volunteers * self.get_duration()
 
     def get_duration(self):
-        # print ('>>> %s' % (self.end_datetime - self.start_datetime))
-        # return self.end_datetime - self.start_datetimeA
-        return 0
+        # difference is in seconds (float with milli seconds)
+        # methods returns difference in Hours (as float)
+        difference = self.end_datetime - self.start_datetime
+        return round(difference.total_seconds() / 60 / 60, 2)
 
 
 class Event(CommonModel):
@@ -136,14 +134,14 @@ class Event(CommonModel):
     class Meta:
         ordering = ['name', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
-    def get_number_of_sessions(self):
+    def get_num_shifts(self):
         '''
         Returns the total number of registered sesssions
         '''
-        return self.session.all().count()
+        return self.session.count()
 
 
 class Organization(CommonModel):
@@ -154,11 +152,11 @@ class Organization(CommonModel):
     class Meta:
         ordering = ['name', ]
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
-    def get_number_of_events(self):
+    def get_num_events(self):
         '''
         Returns the total number of registered events
         '''
-        return self.event.all().count()
+        return self.event.count()
