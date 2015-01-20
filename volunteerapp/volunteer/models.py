@@ -88,7 +88,7 @@ class Shift(CommonModel):
 
     def get_remaining_space(self):
         if self.max_volunteers is None:
-            return unicode('unlimited')
+            return u'unlimited'
         space = self.max_volunteers - self.volunteers.count()
         if space < 0:
             space = 0
