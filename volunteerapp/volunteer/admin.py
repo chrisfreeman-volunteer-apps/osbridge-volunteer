@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 
-from .models import Shift, Event, Organization
+from .models import Task, Shift, Event, Organization
 
 
 class CommonAdmin(admin.ModelAdmin):
@@ -33,6 +33,19 @@ class OrganizationAdmin(CommonAdmin):
         'get_num_events',
     )
 
+
+class TaskAdmin(admin.ModelAdmin):
+    ordering = ['shift__name', 'shift__status']
+    list_display = (
+        # 'shift__name', 'shift__description',
+        # 'shift__status',
+        'shift', 'volunteer',
+        'checked_in_by', 'marked_noshow_by')
+    list_editable = ('checked_in_by', 'marked_noshow_by')
+    list_filter = ['shift__status']
+
+
 admin.site.register(Shift, ShiftAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Organization, OrganizationAdmin)
+admin.site.register(Task, TaskAdmin)
