@@ -160,3 +160,43 @@ class Organization(CommonModel):
         Returns the total number of registered events
         '''
         return self.event.count()
+
+
+class Task(TimeStampedModel):
+    '''
+    A Task object will hold all information needed between the User (volunteer)
+    and the particular event shift.
+    Note: enrolled_datetime is automatically set through the TimeStampedModel attr
+    `created`
+    '''
+
+    shift = models.ForeignKey(
+        Shift, help_text=_("Which shift will the volunteer cover?"))
+    volunteer = models.ForeignKey(
+        Users, help_text=_("Who is the volunteer?"))
+    checked_in_by = models.ForeignKey(
+        Users, blank=True, null=True,
+        related_name="volunteer_checked_in_by")
+    checked_in_datetime = models.DateTimeField(
+        blank=True, null=True)
+    checked_out_by = models.ForeignKey(
+        Users, blank=True, null=True,
+        related_name="volunteer_checked_out_by")
+    checked_out_datetime = models.DateTimeField(
+        blank=True, null=True)
+    marked_noshow_by = models.ForeignKey(
+        Users, blank=True, null=True,
+        related_name="volunteer_marked_noshow_by")
+    marked_noshow_at = models.DateTimeField(
+        blank=True, null=True)
+    marked_canceled_by = models.ForeignKey(
+        Users, blank=True, null=True,
+        related_name="volunteer_marked_canceled_by")
+    marked_canceled_datetime = models.DateTimeField(
+        blank=True, null=True)
+
+    class Meta:
+        ordering = ['shift__start_datetime', ]
+
+    def __str__(self):
+        return ('%s at %s') % (self.shift.name, self.shift.start_datetime)
