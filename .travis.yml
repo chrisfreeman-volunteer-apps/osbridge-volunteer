@@ -6,7 +6,7 @@ python:
 
 env:
     - DJANGO=1.7.2 DJANGO_CONFIGURATION="Testing"
-    # DJANGO=1.7.1 DJANGO_CONFIGURATION="Testing"
+    - DJANGO=1.7.3 DJANGO_CONFIGURATION="Testing"
 
 addons:
     postgresql: "9.3"
