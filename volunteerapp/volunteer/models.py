@@ -33,6 +33,9 @@ class CommonModel(TimeStampedModel):
     description = models.TextField(
         max_length=100, null=True, blank=True,
         help_text=_("Describe the shift."))
+    location = models.TextField(
+        max_length=150, null=True, blank=True,
+        help_text=_("Where is the organization, event or shift located or held?"))
     status = models.CharField(
         max_length=2, default='DR', choices=STATUS_CHOICES,
         help_text=_("Status of the item (e.g. draft, active or closed). Draft is default."))
