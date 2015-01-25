@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+# from django.views.generic import TemplateView
 
 from rest_framework.routers import DefaultRouter
 
@@ -21,22 +21,22 @@ router.register(r'events', views.EventViewSet)
 router.register(r'shifts', views.ShiftViewSet)
 
 urlpatterns = patterns('',
-    url(r'^$',  # noqa
-        TemplateView.as_view(template_name='pages/home.html'),
-        name="home"),
-    url(r'^about/$',
-        TemplateView.as_view(template_name='pages/about.html'),
-        name="about"),
+    # url(r'^$',  # noqa
+    #     TemplateView.as_view(template_name='pages/home.html'),
+    #     name="home"),
+    # url(r'^about/$',
+    #     TemplateView.as_view(template_name='pages/about.html'),
+    #     name="about"),
 
     # Uncomment the next line to enable the admin:
-    url(r'^admin/', include(admin.site.urls)),
+    # url(r'^admin/', include(admin.site.urls)),
 
     # User management
     url(r'^profile/', include("users.urls", namespace="profile")),
-    url(r'^accounts/', include('allauth.urls')),
+    # url(r'^accounts/', include('allauth.urls')),
 
     # Uncomment the next line to enable avatars
-    url(r'^avatar/', include('avatar.urls')),
+    # url(r'^avatar/', include('avatar.urls')),
 
     # API urls go here
     url(r'^api/', include(router.urls)),
