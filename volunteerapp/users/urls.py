@@ -28,4 +28,9 @@ urlpatterns = patterns('',
         view=views.UserUpdateView.as_view(),
         name='update'
     ),
+    url(
+        regex=r'^check/(?P<username>[\w.@+-]+)/$',
+        view=views.UsernameAJAXView.as_view(),
+        name='username-check'
+    ),
 )

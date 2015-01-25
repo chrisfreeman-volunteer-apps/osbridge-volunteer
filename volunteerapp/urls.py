@@ -6,9 +6,19 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from django.views.generic import TemplateView
 
+from rest_framework.routers import DefaultRouter
+
+from volunteer import views
+
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+# set API routers
+router = DefaultRouter()
+router.register(r'org', views.OrganizationViewSet)
+router.register(r'events', views.EventViewSet)
+router.register(r'shifts', views.ShiftViewSet)
 
 urlpatterns = patterns('',
     url(r'^$',  # noqa
@@ -28,6 +38,8 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable avatars
     url(r'^avatar/', include('avatar.urls')),
 
-    # Your stuff: custom urls go here
+    # API urls go here
+    url(r'^api/', include(router.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

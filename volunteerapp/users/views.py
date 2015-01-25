@@ -9,7 +9,7 @@ from django.views.generic import UpdateView
 from django.views.generic import ListView
 
 # Only authenticated users can access views using this.
-from braces.views import LoginRequiredMixin
+from braces.views import LoginRequiredMixin, JSONResponseMixin
 
 # Import the form from users/forms.py
 from .forms import UserForm
@@ -51,3 +51,16 @@ class UserListView(LoginRequiredMixin, ListView):
     # These next two lines tell the view to index lookups by username
     slug_field = "username"
     slug_url_kwarg = "username"
+
+
+class UsernameAJAXView(JSONResponseMixin, DetailView):
+    model = Users
+    json_dumps_kwargs = {u"indent": 2}
+
+    def get(self, request, *args, **kwargs):
+        if Users.objects.filter(username__iexact=kwargs['username']):
+            context_dict = {u"exists": True}
+        else:
+            context_dict = {u"exists": False}
+
+        return self.render_json_response(context_dict)
