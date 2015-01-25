@@ -132,7 +132,7 @@ class Shift(CommonModel):
 class Event(CommonModel):
 
     admin = models.ManyToManyField(
-        Users, null=True, blank=True)
+        Users, null=True, blank=True, related_name='events')
     session = models.ManyToManyField(
         Shift, null=True, blank=True)
 
@@ -152,7 +152,7 @@ class Event(CommonModel):
 class Organization(CommonModel):
 
     admin = models.ManyToManyField(
-        Users, null=True, blank=True)
+        Users, null=True, blank=True, related_name='organizations')
     event = models.ManyToManyField(
         Event, null=True, blank=True)
 
