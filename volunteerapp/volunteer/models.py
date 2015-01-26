@@ -93,9 +93,7 @@ class Shift(CommonModel):
         if self.max_volunteers is None:
             return u'unlimited'
         space = self.max_volunteers - self.volunteers.count()
-        if space < 0:
-            space = 0
-        return space
+        return space if space > 0 else 0
 
     def get_percent_full(self):
         if self.max_volunteers is None:

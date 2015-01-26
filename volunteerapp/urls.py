@@ -8,7 +8,8 @@ from django.conf.urls.static import static
 
 from rest_framework.routers import DefaultRouter
 
-from volunteer import views
+from volunteer import views as volunteer_views
+from users import views as user_views
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -16,9 +17,10 @@ admin.autodiscover()
 
 # set API routers
 router = DefaultRouter()
-router.register(r'org', views.OrganizationViewSet)
-router.register(r'events', views.EventViewSet)
-router.register(r'shifts', views.ShiftViewSet)
+router.register(r'org', volunteer_views.OrganizationViewSet)
+router.register(r'events', volunteer_views.EventViewSet)
+router.register(r'shifts', volunteer_views.ShiftViewSet)
+router.register(r'profile', user_views.UserViewSet)
 
 urlpatterns = patterns('',
     # url(r'^$',  # noqa

@@ -43,7 +43,9 @@ class Local(Common):
 
     # django-debug-toolbar
     MIDDLEWARE_CLASSES = Common.MIDDLEWARE_CLASSES + ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar', 'django_extensions',)
+    INSTALLED_APPS += (
+        'debug_toolbar',
+        'django_extensions',)
 
     INTERNAL_IPS = ('127.0.0.1', '10.0.2.2',)
 
@@ -51,7 +53,7 @@ class Local(Common):
         'DISABLE_PANELS': [
             'debug_toolbar.panels.redirects.RedirectsPanel',
         ],
-        'SHOW_TEMPLATE_CONTEXT': True,
+        'SHOW_TEMPLATE_CONTEXT': False,
     }
     # end django-debug-toolbar
 

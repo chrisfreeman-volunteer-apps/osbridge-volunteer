@@ -265,4 +265,14 @@ class Common(Configuration):
     def post_setup(cls):
         cls.DATABASES['default']['ATOMIC_REQUESTS'] = True
 
+    # Django REST Framework
+    REST_FRAMEWORK = {
+        'DEFAULT_PERMISSION_CLASSES': (
+            # 'rest_framework.permissions.AllowAny',
+        ),
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework.authentication.BasicAuthentication',
+        ]
+    }
+
     # Your common stuff: Below this line define 3rd party library settings
