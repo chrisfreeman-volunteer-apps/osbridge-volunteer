@@ -132,7 +132,7 @@ class Shift(CommonModel):
 class Event(CommonModel):
 
     admin = models.ManyToManyField(
-        Users, null=True, blank=True, related_name='events')
+        Users, null=True, blank=True, related_name='event')
     session = models.ManyToManyField(
         Shift, null=True, blank=True)
 
@@ -152,7 +152,7 @@ class Event(CommonModel):
 class Organization(CommonModel):
 
     admin = models.ManyToManyField(
-        Users, null=True, blank=True, related_name='organizations')
+        Users, null=True, blank=True, related_name='organization')
     event = models.ManyToManyField(
         Event, null=True, blank=True)
 
@@ -177,10 +177,18 @@ class Task(TimeStampedModel):
     `created`
     '''
 
+    RECOMMEND_CHOICES = (
+        ('--', _('Choose the Status')),
+        ('O', _('Outstanding Volunteer')),
+        ('A', _('Amazing Help')),
+        ('G', _('Great Support')),
+        ('N', _('Not sure if I would recommend')),
+    )
+
     shift = models.ForeignKey(
         Shift, help_text=_("Which shift will the volunteer cover?"))
     volunteer = models.ForeignKey(
-        Users, help_text=_("Who is the volunteer?"))
+        Users, related_name="task", help_text=_("Who is the volunteer?"))
     checked_in_by = models.ForeignKey(
         Users, blank=True, null=True,
         related_name="volunteer_checked_in_by")
@@ -190,6 +198,9 @@ class Task(TimeStampedModel):
         Users, blank=True, null=True,
         related_name="volunteer_checked_out_by")
     checked_out_datetime = models.DateTimeField(
+        blank=True, null=True)
+    checked_out_statement = models.CharField(
+        choices=RECOMMEND_CHOICES, max_length=1,
         blank=True, null=True)
     marked_noshow_by = models.ForeignKey(
         Users, blank=True, null=True,

@@ -10,12 +10,14 @@ from django.views.generic import DetailView
 
 # Only authenticated users can access views using this.
 from braces.views import JSONResponseMixin  # , #LoginRequiredMixin
+from rest_framework import generics
 
 # Import the form from users/forms.py
 # from .forms import UserForm
 
 # Import the customized User model
 from .models import Users
+from .serializers import UserSerializer
 
 
 # class UserDetailView(LoginRequiredMixin, DetailView):
@@ -51,6 +53,18 @@ from .models import Users
 #     # These next two lines tell the view to index lookups by username
 #     slug_field = "username"
 #     slug_url_kwarg = "username"
+
+
+class UserList(generics.ListAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'username'
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = Users.objects.all()
+    serializer_class = UserSerializer
+    lookup_field = 'username'
 
 
 class UsernameAJAXView(JSONResponseMixin, DetailView):
