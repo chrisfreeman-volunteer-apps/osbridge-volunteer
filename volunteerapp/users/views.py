@@ -13,22 +13,6 @@ from .serializers import UserSerializer
 from .permissions import IsOwnerOrReadOnly
 
 
-# class UserList(generics.ListAPIView):
-#     queryset = Users.objects.all()
-#     serializer_class = UserSerializer
-#     lookup_field = 'username'
-
-
-# class UserDetail(generics.RetrieveAPIView):
-#     queryset = Users.objects.all()
-#     serializer_class = UserSerializer
-#     permission_classes = (
-#         permissions.IsAuthenticatedOrReadOnly,
-#         IsOwnerOrReadOnly
-#     )
-#     lookup_field = 'username'
-
-
 class UserViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list` and `detail` actions.

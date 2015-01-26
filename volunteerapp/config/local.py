@@ -53,7 +53,7 @@ class Local(Common):
         'DISABLE_PANELS': [
             'debug_toolbar.panels.redirects.RedirectsPanel',
         ],
-        'SHOW_TEMPLATE_CONTEXT': False,
+        'SHOW_TEMPLATE_CONTEXT': True,
     }
     # end django-debug-toolbar
 

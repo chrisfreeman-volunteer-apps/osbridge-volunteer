@@ -13,6 +13,4 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return True
 
         # Write permissions are only allowed if user is admin of the object.
-        print ('self: ', obj.admin.all())
-        print (request.user)
         return obj.admin.filter(id=request.user.id).exists()
