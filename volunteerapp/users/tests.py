@@ -1,9 +1,9 @@
 from django.test import TestCase
-from .models import Users
+from users.models import Users
 
 
 class UserTestCase(TestCase):
-    def setUp(self):
+    def setUp(self):  # noqa
         Users.objects.create(username="john")
         Users.objects.create(username="martha")
 
@@ -13,4 +13,3 @@ class UserTestCase(TestCase):
         martha = Users.objects.get(username="martha")
         self.assertEqual(john.username, 'john')
         self.assertEqual(martha.username, 'martha')
-        # self.assertEqual(cat.speak(), 'The cat says "meow"')

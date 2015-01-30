@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions
 
 from .models import Organization, Event, Shift
 from .serializers import OrganizationSerializer, EventSerializer, ShiftSerializer
-from .permissions import IsAdminOrReadOnly
+from .permissions import IsObjectAdminOrReadOnly
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):
@@ -11,8 +11,15 @@ class OrganizationViewSet(viewsets.ModelViewSet):
     """
     queryset = Organization.objects.all()
     serializer_class = OrganizationSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsObjectAdminOrReadOnly,
+    )
     lookup_field = 'slug'
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.admin.add(self.request.user)
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -21,8 +28,15 @@ class EventViewSet(viewsets.ModelViewSet):
     """
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsObjectAdminOrReadOnly,
+    )
     lookup_field = 'slug'
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        instance.admin.add(self.request.user)
 
 
 class ShiftViewSet(viewsets.ModelViewSet):

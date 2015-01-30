@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Python methods and packages
 from decimal import Decimal
-# from datetime import datetime, timedelta
 
 # Django packages
 from django.db import models
@@ -16,6 +15,10 @@ from users.models import Users
 
 
 class CommonModel(TimeStampedModel):
+    """
+    The models Organization, Event and Shift with
+    inherit common attributes from CommonModel
+    """
 
     STATUS_CHOICES = (
         ('--', _('Choose the Status')),
@@ -26,6 +29,7 @@ class CommonModel(TimeStampedModel):
 
     name = models.CharField(
         max_length=100, null=True,
+        unique=True,
         help_text=_("Please add a descriptive name."))
     slug = models.SlugField(
         max_length=50, blank=True,
@@ -61,6 +65,9 @@ class CommonModel(TimeStampedModel):
 
 
 class Shift(CommonModel):
+    """
+    The Shift model hold the information around event shifts.
+    """
 
     max_volunteers = models.PositiveIntegerField(
         blank=True, null=True,
@@ -80,6 +87,10 @@ class Shift(CommonModel):
 
     def __str__(self):
         return self.name
+
+    def __init__(self, *args, **kwargs):
+        self._meta.get_field('name').unique = False
+        super(Shift, self).__init__(*args, **kwargs)
 
     def is_full(self):
         if self.max_volunteers is None:
@@ -128,6 +139,10 @@ class Shift(CommonModel):
 
 
 class Event(CommonModel):
+    """
+    The Event model holds the information around Events and
+    connects Organizations with Shifts
+    """
 
     admin = models.ManyToManyField(
         Users, null=True, blank=True, related_name='event')
@@ -148,6 +163,10 @@ class Event(CommonModel):
 
 
 class Organization(CommonModel):
+    """
+    Simple Organization model to hold the information about
+    organizations and who can modify these details
+    """
 
     admin = models.ManyToManyField(
         Users, null=True, blank=True, related_name='organization')

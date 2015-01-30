@@ -169,7 +169,7 @@ class Common(Configuration):
     )
 
     # See: http://django-crispy-forms.readthedocs.org/en/latest/install.html#template-packs
-    CRISPY_TEMPLATE_PACK = 'bootstrap3'
+    # CRISPY_TEMPLATE_PACK = 'bootstrap3'
     # END TEMPLATE CONFIGURATION
 
     # STATIC FILE CONFIGURATION
@@ -267,11 +267,12 @@ class Common(Configuration):
 
     # Django REST Framework
     REST_FRAMEWORK = {
-        'DEFAULT_PERMISSION_CLASSES': (
-            # 'rest_framework.permissions.AllowAny',
-        ),
+        'DEFAULT_PERMISSION_CLASSES': [
+            'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        ],
         'DEFAULT_AUTHENTICATION_CLASSES': [
             'rest_framework.authentication.BasicAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
         ]
     }
 
