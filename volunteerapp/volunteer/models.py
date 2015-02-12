@@ -26,19 +26,18 @@ class CommonModel(TimeStampedModel):
         ('DR', _('Draft Mode')),
         ('CL', _('Closed')),
     )
-
     name = models.CharField(
         max_length=100, null=True,
         unique=True,
         help_text=_("Please add a descriptive name."))
     slug = models.SlugField(
-        max_length=50, blank=True,
+        max_length=100, blank=True,
         help_text=_("The slug field is automatically set, based on the shift name."))
     description = models.TextField(
-        max_length=100, null=True, blank=True,
+        null=True, blank=True,
         help_text=_("Describe the shift."))
     location = models.TextField(
-        max_length=150, null=True, blank=True,
+        null=True, blank=True,
         help_text=_("Where is the organization, event or shift located or held?"))
     status = models.CharField(
         max_length=2, default='DR', choices=STATUS_CHOICES,
@@ -57,11 +56,112 @@ class CommonModel(TimeStampedModel):
         except self.__class__.DoesNotExist:
             return name
         return name
-        # raise forms.ValidationError(self.error_messages['duplicate_name'])
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super(CommonModel, self).save(*args, **kwargs)
+
+
+class Organization(CommonModel):
+    """
+    Simple Organization model to hold the information about
+    organizations and who can modify these details
+    """
+
+    admin = models.ManyToManyField(
+        Users, null=True, blank=True, related_name='organization')
+
+    class Meta:
+        ordering = ['name', ]
+
+    def __str__(self):
+        return self.name
+
+    def get_num_events(self):
+        '''
+        Returns the total number of registered events
+        '''
+        return self.event_set.count()
+
+
+class Event(CommonModel):
+    """
+    The Event model holds the information around Events and
+    connects Organizations with Shifts
+    """
+
+    admin = models.ManyToManyField(
+        Users, null=True, blank=True, related_name='event')
+    organization = models.ForeignKey(Organization, null=True, blank=True)
+
+    class Meta:
+        ordering = ['name', ]
+
+    def __str__(self):
+        return self.name
+
+    def get_num_shifts(self):
+        '''
+        Returns the total number of registered sesssions
+        '''
+        return self.shift_set.count()
+
+
+class CommonJobModel(TimeStampedModel):
+    """
+    `CommonJobModel` is an abstract class for all Job* classes
+    and holds the common attributes
+    """
+    name = models.CharField(
+        max_length=100, null=True,
+        unique=True,
+        help_text=_(
+            "Please add a descriptive name for \
+            thisjob/category or restriction."))
+    description = models.TextField(
+        null=True, blank=True,
+        help_text=_("Describe this job/category or restriction."))
+    slug = models.SlugField(
+        max_length=100, blank=True,
+        help_text=_("The slug field is automatically set."))
+    organization = models.ForeignKey(
+        Organization,
+        null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+    def __unicode__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(CommonJobModel, self).save(*args, **kwargs)
+
+
+class JobRestriction(CommonJobModel):
+    """
+    The class `JobRestriction` holds the restriction to jobs
+    """
+    pass
+
+
+class JobCategory(CommonJobModel):
+    """
+    The class `JobCategory` defines job categories.
+    """
+    pass
+
+
+class Job(CommonJobModel):
+    """
+    The Job objects contain information about the duties to be performed by
+    an individual volunteer.
+    """
+    restriction = models.ForeignKey(
+        JobRestriction, null=True, blank=True)
+    category = models.ForeignKey(
+        JobCategory, null=True, blank=True)
 
 
 class Shift(CommonModel):
@@ -69,12 +169,16 @@ class Shift(CommonModel):
     The Shift model hold the information around event shifts.
     """
 
+    event = models.ForeignKey(Event, null=True, blank=True)
     max_volunteers = models.PositiveIntegerField(
         blank=True, null=True,
         help_text=_("Number of volunteers are needed for this shift"))
     volunteers = models.ManyToManyField(
         Users, null=True, blank=True,
         help_text=_("Lists all registered volunteers for this shift."))
+    job = models.ForeignKey(
+        Job, blank=True, null=True,
+        help_text=_("What duties need to be performed during this shift?"))
     start_datetime = models.DateTimeField(
         null=True, blank=True,
         help_text=_("Shift start date and time"))
@@ -138,54 +242,6 @@ class Shift(CommonModel):
         return round(difference.total_seconds() / 60 / 60, 2)
 
 
-class Event(CommonModel):
-    """
-    The Event model holds the information around Events and
-    connects Organizations with Shifts
-    """
-
-    admin = models.ManyToManyField(
-        Users, null=True, blank=True, related_name='event')
-    session = models.ManyToManyField(
-        Shift, null=True, blank=True)
-
-    class Meta:
-        ordering = ['name', ]
-
-    def __str__(self):
-        return self.name
-
-    def get_num_shifts(self):
-        '''
-        Returns the total number of registered sesssions
-        '''
-        return self.session.count()
-
-
-class Organization(CommonModel):
-    """
-    Simple Organization model to hold the information about
-    organizations and who can modify these details
-    """
-
-    admin = models.ManyToManyField(
-        Users, null=True, blank=True, related_name='organization')
-    event = models.ManyToManyField(
-        Event, null=True, blank=True)
-
-    class Meta:
-        ordering = ['name', ]
-
-    def __str__(self):
-        return self.name
-
-    def get_num_events(self):
-        '''
-        Returns the total number of registered events
-        '''
-        return self.event.count()
-
-
 class Task(TimeStampedModel):
     '''
     A Task object will hold all information needed between the User (volunteer)
@@ -195,7 +251,7 @@ class Task(TimeStampedModel):
     '''
 
     RECOMMEND_CHOICES = (
-        ('--', _('Choose the Status')),
+        ('-', _('Choose the Status')),
         ('O', _('Outstanding Volunteer')),
         ('A', _('Amazing Help')),
         ('G', _('Great Support')),
