@@ -25,7 +25,7 @@ class ShiftAdmin(CommonAdmin):
 class EventAdmin(CommonAdmin):
     list_display = CommonAdmin.list_display + (
         # 'admin',
-        'get_num_shifts',
+        # 'get_num_shifts',
     )
     # list_editable = CommonAdmin.list_editable + ('admin',)
 
@@ -33,7 +33,7 @@ class EventAdmin(CommonAdmin):
 class OrganizationAdmin(CommonAdmin):
     list_display = CommonAdmin.list_display + (
         # 'admin',
-        'get_num_events',
+        # 'get_num_events',
     )
     # list_editable = CommonAdmin.list_editable + ('admin',)
 
