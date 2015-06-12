@@ -162,3 +162,8 @@ You can then deploy by running the following commands.
     ssh -t dokku@yourservername.com dokku run volunteerapp python volunteerapp/manage.py createsuperuser
 
 When deploying via Dokku make sure you backup your database in some fashion as it is NOT done automatically.
+
+AWS Configuration
+^^^^^
+
+To allow static assets to be uploaded ensure that the account mentioned in DJANGO_AWS_ACCESS_KEY_ID has access to run GetObject, PutObject and ListBucket on the S3 bucket specified in DJANGO_AWS_STORAGE_BUCKET_NAME.
